@@ -1550,82 +1550,134 @@ body.dark-mode #qrcode{
 }
 
 @media(max-width:640px){
+    /* 1. ELIMINAR MÁRGENES IZQUIERDOS DEL SIDEBAR ESCRITORIO */
     .sidebar-dashboard{
-        display:none;
+        display:none !important;
     }
 
     .top-dashboard,
-    main{
-        margin-left:0;
-        padding-inline:18px;
+    main {
+        margin-left: 0 !important; /* Forzamos a ocupar el 100% del ancho móvil */
+        padding-inline: 16px !important;
     }
 
-    .top-dashboard{
-        flex-direction:column;
-        align-items:flex-start;
-        gap:22px;
+    /* 2. REESTRUCTURACIÓN DEL HEADER SUPERIOR */
+    .top-dashboard {
+        flex-direction: column;
+        align-items: stretch; /* Botones estirados a lo ancho */
+        gap: 16px;
+        padding: 24px 16px !important;
     }
 
-    .top-actions{
-        width:100%;
-        flex-wrap:wrap;
+    .top-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr auto; /* Modo oscuro toma el espacio, sync se queda al lado */
+        gap: 10px;
     }
 
-    .metrics-header{
-        flex-direction:column;
-        align-items:flex-start;
+    .btn-top {
+        width: 100%;
+        justify-content: center;
     }
 
-    .metrics-actions{
-        width:100%;
-        display:grid;
-        grid-template-columns:1fr 1fr;
+    /* 3. SECCIÓN BUSCADOR Y ACCIONES */
+    .search-area {
+        width: 100%;
+        padding: 14px 20px;
+        margin-bottom: 16px;
+    }
+
+    .btn-primary-glow {
+        width: 100%; /* Botón "REGISTRAR ALUMNO" full-width para fácil tap */
+        padding: 14px 24px;
+    }
+
+    /* 4. SECCIÓN DE MÉTRICAS (Métricas de Impacto) */
+    .metrics-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .metrics-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr; /* Excel y PDF lado a lado */
+        gap: 10px;
+    }
+
+    /* 5. ARREGLO DE GRIDS COMPACTOS */
+    .grid-container {
+        grid-template-columns: 1fr !important; /* Tarjetas de alumnos en una sola columna */
+        gap: 16px;
     }
 
     .metrics-grid,
     .chart-kpis,
-    .form-grid.two{
-        grid-template-columns:1fr;
+    .form-grid.two {
+        grid-template-columns: 1fr !important; /* Evita que las microtarjetas se compriman de lado */
+        gap: 12px;
+    }
+
+    /* 6. CORRECCIÓN DE CAJAS FIJAS (Métricas y Gráficos) */
+    .metric-card {
+        min-height: auto !important; /* Evita huecos vacíos innecesarios */
+        padding: 20px;
+    }
+
+    .chart-card {
+        padding: 16px;
+    }
+
+    .chart-header-pro {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .chart-header-pro span {
+        width: 100%;
+        justify-content: center;
     }
 
     .chart-box,
-    .chart-box-pro{
-        height:320px;
+    .chart-box-pro {
+        height: 260px !important; /* Reducción de altura para que quepa la gráfica sin romper la vista */
     }
 
-    .trend-card{
-        grid-template-columns:1fr;
-        text-align:center;
+    /* 7. TARJETA DE TENDENCIA */
+    .trend-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 12px;
     }
 
-    .trend-icon{
-        margin:0 auto;
+    .trend-icon {
+        margin: 0 auto;
     }
 
-    .login-premium{
-        grid-template-columns:1fr;
-        min-height:auto;
+    .trend-status span {
+        width: 100%;
+        justify-content: center;
     }
 
-    .login-brand{
-        padding:44px 28px;
+    /* 8. FORMULARIOS Y MODALES EN MÓVIL */
+    .modal-overlay {
+        padding: 10px;
     }
 
-    .brand-features{
-        grid-template-columns:1fr;
-        margin-top:36px;
+    .modal-sheet {
+        padding: 20px;
+        border-radius: 24px;
     }
 
-    .login-form-panel{
-        padding:28px;
+    .student-modal-header {
+        padding: 24px 16px;
     }
 
-    .student-modal-header{
-        padding:36px 24px 26px;
-    }
-
-    .student-form{
-        padding:28px 24px 34px;
+    .student-form {
+        padding: 20px 16px;
     }
 }
 
@@ -1880,28 +1932,6 @@ body.dark-mode #qrcode{
     font-weight: 800;
 }
 
-/* Responsive login */
-@media(max-width: 900px) {
-    .login-food-community {
-        grid-template-columns: 1fr;
-        min-height: auto;
-    }
-
-    .login-food-left {
-        padding: 42px 28px 280px;
-    }
-
-    .food-illustration {
-        left: 28px;
-        right: 28px;
-        bottom: 28px;
-        height: 210px;
-    }
-
-    .login-food-right {
-        padding: 32px 24px;
-    }
-}
 
 @media(max-width: 560px) {
     .food-illustration {
@@ -1974,64 +2004,6 @@ body.dark-mode #qrcode{
 /* =========================
    LOGIN RESPONSIVE MOVIL
 ========================= */
-@media (max-width: 768px){
-
-    .login-container{
-        display:flex;
-        flex-direction:column;
-        min-height:100vh;
-    }
-
-    .login-left{
-        width:100%;
-        min-height:280px;
-        padding:30px 20px;
-        border-radius:0;
-    }
-
-    .login-left h1{
-        font-size:2.5rem;
-        text-align:center;
-    }
-
-    .login-left p{
-        text-align:center;
-    }
-
-    .login-features{
-        display:none;
-    }
-
-    .food-illustration{
-        max-width:220px;
-        margin:20px auto;
-    }
-
-    .login-right{
-        width:100%;
-        padding:20px;
-    }
-
-    .login-card{
-        width:100%;
-        max-width:100%;
-        padding:30px 20px;
-        border-radius:24px;
-    }
-
-    .login-card h2{
-        font-size:2rem;
-    }
-
-    .input-group input{
-        font-size:16px;
-    }
-
-    .btn-login{
-        width:100%;
-        height:56px;
-    }
-}
 /* ==========================================
    LOGIN RESPONSIVE SARAHUARO
 ========================================== */
@@ -2091,5 +2063,89 @@ body.dark-mode #qrcode{
 
     .login-btn{
         width:100% !important;
+    }
+}
+/* =====================================
+   LOGIN MOBILE DEFINITIVO
+===================================== */
+
+@media (max-width: 768px){
+
+    .modal-overlay.login-overlay{
+        padding:0;
+        align-items:flex-start;
+        overflow-y:auto;
+    }
+
+    .login-food-community{
+        width:100%;
+        min-height:100vh;
+        border-radius:0;
+        display:flex;
+        flex-direction:column;
+    }
+
+    .login-food-left{
+        padding:30px 20px;
+        min-height:auto;
+    }
+
+    .login-food-logo{
+        justify-content:center;
+        margin-bottom:25px;
+    }
+
+    .login-food-left h1{
+        text-align:center;
+        font-size:2rem;
+        line-height:1.15;
+    }
+
+    .login-food-left p{
+        text-align:center;
+        font-size:.95rem;
+        margin-top:18px;
+    }
+
+    .food-illustration{
+        position:relative;
+        left:auto;
+        right:auto;
+        bottom:auto;
+        width:100%;
+        max-width:260px;
+        height:140px;
+        margin:25px auto 0;
+        gap:14px;
+    }
+
+    .plate,
+    .cup{
+        width:80px;
+        height:80px;
+    }
+
+    .plate i,
+    .cup i{
+        font-size:2.2rem;
+    }
+
+    .login-food-right{
+        padding:20px;
+    }
+
+    .login-card-food{
+        width:100%;
+        max-width:none;
+        padding:28px 22px;
+        border-radius:24px;
+    }
+
+    .login-card-food h2{
+        font-size:1.5rem;
+    }
+
+    .login-card-food .login-input input{
+        font-size:16px;
     }
 }
