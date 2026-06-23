@@ -1550,128 +1550,117 @@ body.dark-mode #qrcode{
 }
 
 @media(max-width:640px){
-    /* 1. CONTENEDOR PRINCIPAL */
+    /* ==========================================================================
+       1. SIDEBAR DESPLEGABLE MÓVIL (Mantiene tus colores originales)
+       ========================================================================== */
     .sidebar-dashboard {
-        display: none !important;
+        display: flex !important; 
+        position: fixed;
+        top: 0;
+        left: -280px; /* Escondido por defecto */
+        width: 260px;
+        height: 100vh;
+        background: linear-gradient(180deg, var(--primary), var(--primary-dark)) !important;
+        transition: left 0.3s ease; 
+        z-index: 9999; 
     }
+
+    .sidebar-dashboard.active {
+        left: 0;
+    }
+
+    /* Forzar a la vista principal a expandirse sin los márgenes de escritorio */
     .top-dashboard,
     main {
         margin-left: 0 !important;
-        padding-inline: 12px !important;
+        padding-inline: 16px !important;
         width: 100% !important;
         box-sizing: border-box;
     }
 
-    /* 2. HEADER SUPERIOR REORGANIZADO */
+    /* ==========================================================================
+       2. HEADER SUPERIOR (Mantiene el fondo translúcido/oscuro original)
+       ========================================================================== */
     .top-dashboard {
         flex-direction: column;
         align-items: stretch !important;
-        gap: 12px;
-        padding: 15px 12px !important;
+        gap: 16px;
+        padding: 20px 16px !important;
     }
 
     .top-dashboard h1 {
-        font-size: 1.4rem !important;
-        text-align: center;
+        font-size: 1.6rem !important;
+    }
+
+    /* Botón Hamburguesa Estilizado */
+    .btn-hamburger {
+        display: block !important;
+        align-self: flex-start;
+        background: linear-gradient(135deg, var(--primary), var(--accent));
+        color: white;
+        border: none;
+        padding: 12px 14px;
+        border-radius: 14px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        box-shadow: 0 8px 20px rgba(11,107,75,.2);
+        z-index: 2001;
     }
 
     .top-actions {
         width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Divide los botones equitativamente */
-        gap: 8px;
+        display: flex !important; 
+        gap: 10px;
     }
 
-    .btn-top {
-        width: 100% !important;
+    #theme-toggle {
+        flex: 1;
         justify-content: center;
-        padding: 10px !important;
-        font-size: 0.85rem !important;
     }
 
-    /* 3. CONTROL DE BUSCADOR Y BOTÓN REGISTRAR */
+    .top-actions button:last-child {
+        width: 52px !important; 
+        height: 52px !important;
+        flex: 0 0 52px !important;
+        padding: 0 !important;
+        justify-content: center;
+    }
+
+    /* ==========================================================================
+       3. SECCIÓN DE INICIO Y TARJETAS PREMIUM DE ALUMNOS
+       ========================================================================== */
     .search-area {
-        flex-direction: column;
-        gap: 12px;
-        width: 100%;
-    }
-
-    .search-box-container {
         width: 100% !important;
+        padding: 16px 22px;
+        margin-bottom: 20px;
     }
 
     .btn-primary-glow {
         width: 100% !important;
         justify-content: center;
-        padding: 12px !important;
+        padding: 16px 32px;
     }
 
-    /* 4. SECCIÓN DE MÉTRICAS / TARJETAS (EVITA EL AMONTONAMIENTO) */
-    .metrics-grid, 
+    /* Mantiene tus hermosas tarjetas Premium en una sola columna fluida */
     .grid-container {
-        display: flex !important;
-        flex-direction: column !important; /* Apila las tarjetas verticalmente en lugar de usar columnas */
-        gap: 12px !important;
+        grid-template-columns: 1fr !important; 
+        gap: 20px;
     }
 
-    .metric-card, 
-    .chart-card {
+    .card-premium {
         width: 100% !important;
-        min-width: 0 !important; /* Permite que el contenedor se encoja correctamente */
         box-sizing: border-box;
-        padding: 16px !important;
     }
 
-    /* Reducir títulos internos para que no fuercen saltos de línea feos */
-    .metric-card h3, 
-    .metric-title {
-        font-size: 0.9rem !important;
-    }
-
-    .metric-value {
-        font-size: 1.6rem !important;
-    }
-
-    /* 5. GRÁFICOS RESPONSIVOS */
-    .chart-box, 
-    .chart-box-pro {
-        height: 220px !important; /* Ajusta la altura del canvas para que no empuje todo hacia abajo */
-        width: 100% !important;
-    }
-
-    /* 6. TABLAS DE ALUMNOS (MUY IMPORTANTE) */
-    /* Para evitar que las tablas rompan la pantalla, les damos un contenedor con scroll horizontal */
-    .table-container, 
-    .responsive-table-wrapper {
-        width: 100% !important;
-        overflow-x: auto !important; /* Activa el desplazamiento lateral si la tabla es muy ancha */
-        -webkit-overflow-scrolling: touch;
-        margin-top: 15px;
-        border-radius: 8px;
-        border: 1px solid var(--border);
-    }
-
-    table {
-        min-width: 500px; /* Fuerza un ancho mínimo a la tabla interna para que los datos sean legibles al hacer scroll */
-        font-size: 0.85rem !important;
-    }
-    
-    th, td {
-        padding: 10px 8px !important;
-    }
-    /* 1. CABECERA DE MÉTRICAS */
+    /* ==========================================================================
+       4. SECCIÓN DE MÉTRICAS (Mantiene el look de lista elástica y limpia)
+       ========================================================================== */
     .metrics-header {
         flex-direction: column !important;
         align-items: stretch !important;
         gap: 16px;
-        text-align: center;
     }
 
-    .metrics-header h2 {
-        font-size: 1.6rem !important; /* Texto más cómodo para pantallas chicas */
-    }
-
-    /* Botones de reporte (Excel y PDF) en paralelo */
     .metrics-actions {
         width: 100% !important;
         display: grid !important;
@@ -1681,92 +1670,93 @@ body.dark-mode #qrcode{
 
     .btn-report {
         justify-content: center;
-        padding: 12px 10px !important;
-        font-size: 0.9rem !important;
     }
 
-    /* 2. REJILLA DE TARJETAS PRINCIPALES (Gasto hoy, Atendidos, etc.) */
     .metrics-grid {
         display: grid !important;
-        grid-template-columns: 1fr !important; /* Una tarjeta por fila */
+        grid-template-columns: 1fr !important; 
         gap: 14px !important;
     }
 
+    /* Ajuste fino para tus tarjetas horizontales sin romper sus bordes ni fondos */
     .metric-card {
-        min-height: auto !important; /* Elimina la altura fija que genera huecos */
-        padding: 20px !important;
-        flex-direction: row !important; /* Alineación horizontal icóno-texto muy elegante en móvil */
+        min-height: auto !important; 
+        display: flex !important;
+        flex-direction: row !important;
         align-items: center;
-        gap: 16px;
+        justify-content: space-between; 
+        gap: 12px;
+        padding: 20px !important;
     }
 
     .metric-icon {
-        margin-bottom: 0 !important; /* Reseteamos el margen de escritorio */
-        width: 54px !important;
-        height: 54px !important;
-        flex: 0 0 54px !important;
-        font-size: 1.3rem !important;
+        margin-bottom: 0 !important; 
+        width: 58px !important;
+        height: 58px !important;
+        flex: 0 0 58px !important;
     }
 
     .metric-card h3 {
-        font-size: 1.6rem !important;
+        font-size: 1.8rem !important;
         margin: 4px 0 !important;
     }
 
-    /* 3. DISTRIBUCIÓN DEL CONTENIDO (Gráfica vs Resumen) */
-    .metrics-layout {
-        grid-template-columns: 1fr !important; /* La gráfica arriba, el resumen abajo */
-        gap: 18px !important;
+    .metric-card p {
+        font-size: 0.8rem !important;
+        line-height: 1.4 !important;
+        margin: 0 !important;
+        max-width: 45%; 
+        text-align: right;
     }
 
-    /* 4. MICRO-KPIS DE LA GRÁFICA (Últimos 5 días, Promedio, etc.) */
+    /* ==========================================================================
+       5. GRÁFICOS Y RESUMEN
+       ========================================================================== */
+    .metrics-layout {
+        grid-template-columns: 1fr !important; 
+        gap: 22px !important;
+    }
+
     .chart-kpis {
-        grid-template-columns: 1fr 1fr !important; /* Los acomodamos en un cómodo tablero de 2x2 */
-        gap: 10px !important;
-        margin-bottom: 16px !important;
+        grid-template-columns: 1fr 1fr !important; 
+        gap: 12px !important;
     }
 
     .chart-kpi {
-        padding: 12px !important;
-        flex-direction: column !important; /* Icono arriba, datos abajo */
+        flex-direction: column !important; 
         text-align: center;
         gap: 8px !important;
     }
 
     .chart-kpi-icon {
-        width: 44px !important;
-        height: 44px !important;
-        flex: 0 0 44px !important;
-        font-size: 1.1rem !important;
+        margin: 0 auto;
     }
 
-    .chart-kpi strong {
-        font-size: 1.25rem !important;
+    .chart-box, 
+    .chart-box-pro {
+        height: 260px !important; 
     }
 
-    /* 5. CONTROL DE ALTURA DEL GRÁFICO (CANVAS) */
-    .chart-box, .chart-box-pro {
-        height: 250px !important; /* Evita que el gráfico se estire infinitamente hacia abajo */
-        position: relative;
-        width: 100%;
-    }
-
-    /* 6. CORRECCIÓN DE LA TARJETA DE TENDENCIA */
     .trend-card {
-        grid-template-columns: 1fr !important; /* Colapsa el grid horizontal de 3 columnas */
+        grid-template-columns: 1fr !important; 
         text-align: center;
-        gap: 12px !important;
-        padding: 16px !important;
     }
 
     .trend-icon {
         margin: 0 auto !important;
     }
 
-    .trend-status span {
-        display: flex;
-        justify-content: center;
-        width: 100%;
+    /* ==========================================================================
+       6. COMPLEMENTOS Y FORMULARIOS
+       ========================================================================== */
+    .form-grid.two {
+        grid-template-columns: 1fr !important;
+    }
+
+    .table-container {
+        width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch;
     }
 }
 
