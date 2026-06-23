@@ -1590,6 +1590,39 @@ function toggleTheme() {
 }
 
 aplicarTemaGuardado();
+// Función para abrir/cerrar el menú desplegable en móvil
+function toggleMenuMobile() {
+    const sidebar = document.querySelector('.sidebar-dashboard');
+    if (sidebar) {
+        sidebar.classList.toggle('active');
+    }
+}
+
+// Modificamos ligeramente la función existente cambiarPestana para que cierre el menú automáticamente tras elegir una opción
+const cambiarPestanaOriginal = cambiarPestana;
+cambiarPestana = function(target) {
+    // Ejecuta la lógica original que ya tenías
+    cambiarPestanaOriginal(target);
+    
+    // Si estamos en móvil, cierra el menú desplegable
+    const sidebar = document.querySelector('.sidebar-dashboard');
+    if (sidebar && window.innerWidth <= 640) {
+        sidebar.classList.remove('active');
+    }
+}
+
+// Cerrar el menú si el usuario da clic fuera de él
+document.addEventListener("click", function(e) {
+    const sidebar = document.querySelector('.sidebar-dashboard');
+    const btnHam = document.querySelector('.btn-hamburger');
+    
+    if (sidebar && sidebar.classList.contains('active')) {
+        // Si el clic no fue dentro del menú ni en el botón de hamburguesa, lo cerramos
+        if (!sidebar.contains(e.target) && !btnHam.contains(e.target)) {
+            sidebar.classList.remove('active');
+        }
+    }
+});
 
 function mostrarToast(mensaje, tipo = "success") {
     const container = document.getElementById("toast-container");

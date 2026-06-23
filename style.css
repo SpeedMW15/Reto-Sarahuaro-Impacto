@@ -1550,134 +1550,114 @@ body.dark-mode #qrcode{
 }
 
 @media(max-width:640px){
-    /* 1. ELIMINAR MÁRGENES IZQUIERDOS DEL SIDEBAR ESCRITORIO */
-    .sidebar-dashboard{
-        display:none !important;
+    /* 1. CONTENEDOR PRINCIPAL */
+    .sidebar-dashboard {
+        display: none !important;
     }
-
     .top-dashboard,
     main {
-        margin-left: 0 !important; /* Forzamos a ocupar el 100% del ancho móvil */
-        padding-inline: 16px !important;
+        margin-left: 0 !important;
+        padding-inline: 12px !important;
+        width: 100% !important;
+        box-sizing: border-box;
     }
 
-    /* 2. REESTRUCTURACIÓN DEL HEADER SUPERIOR */
+    /* 2. HEADER SUPERIOR REORGANIZADO */
     .top-dashboard {
         flex-direction: column;
-        align-items: stretch; /* Botones estirados a lo ancho */
-        gap: 16px;
-        padding: 24px 16px !important;
+        align-items: stretch !important;
+        gap: 12px;
+        padding: 15px 12px !important;
+    }
+
+    .top-dashboard h1 {
+        font-size: 1.4rem !important;
+        text-align: center;
     }
 
     .top-actions {
         width: 100%;
         display: grid;
-        grid-template-columns: 1fr auto; /* Modo oscuro toma el espacio, sync se queda al lado */
-        gap: 10px;
+        grid-template-columns: 1fr 1fr; /* Divide los botones equitativamente */
+        gap: 8px;
     }
 
     .btn-top {
-        width: 100%;
+        width: 100% !important;
         justify-content: center;
+        padding: 10px !important;
+        font-size: 0.85rem !important;
     }
 
-    /* 3. SECCIÓN BUSCADOR Y ACCIONES */
+    /* 3. CONTROL DE BUSCADOR Y BOTÓN REGISTRAR */
     .search-area {
+        flex-direction: column;
+        gap: 12px;
         width: 100%;
-        padding: 14px 20px;
-        margin-bottom: 16px;
+    }
+
+    .search-box-container {
+        width: 100% !important;
     }
 
     .btn-primary-glow {
-        width: 100%; /* Botón "REGISTRAR ALUMNO" full-width para fácil tap */
-        padding: 14px 24px;
+        width: 100% !important;
+        justify-content: center;
+        padding: 12px !important;
     }
 
-    /* 4. SECCIÓN DE MÉTRICAS (Métricas de Impacto) */
-    .metrics-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 16px;
-    }
-
-    .metrics-actions {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr; /* Excel y PDF lado a lado */
-        gap: 10px;
-    }
-
-    /* 5. ARREGLO DE GRIDS COMPACTOS */
+    /* 4. SECCIÓN DE MÉTRICAS / TARJETAS (EVITA EL AMONTONAMIENTO) */
+    .metrics-grid, 
     .grid-container {
-        grid-template-columns: 1fr !important; /* Tarjetas de alumnos en una sola columna */
-        gap: 16px;
+        display: flex !important;
+        flex-direction: column !important; /* Apila las tarjetas verticalmente en lugar de usar columnas */
+        gap: 12px !important;
     }
 
-    .metrics-grid,
-    .chart-kpis,
-    .form-grid.two {
-        grid-template-columns: 1fr !important; /* Evita que las microtarjetas se compriman de lado */
-        gap: 12px;
-    }
-
-    /* 6. CORRECCIÓN DE CAJAS FIJAS (Métricas y Gráficos) */
-    .metric-card {
-        min-height: auto !important; /* Evita huecos vacíos innecesarios */
-        padding: 20px;
-    }
-
+    .metric-card, 
     .chart-card {
-        padding: 16px;
+        width: 100% !important;
+        min-width: 0 !important; /* Permite que el contenedor se encoja correctamente */
+        box-sizing: border-box;
+        padding: 16px !important;
     }
 
-    .chart-header-pro {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 12px;
+    /* Reducir títulos internos para que no fuercen saltos de línea feos */
+    .metric-card h3, 
+    .metric-title {
+        font-size: 0.9rem !important;
     }
 
-    .chart-header-pro span {
-        width: 100%;
-        justify-content: center;
+    .metric-value {
+        font-size: 1.6rem !important;
     }
 
-    .chart-box,
+    /* 5. GRÁFICOS RESPONSIVOS */
+    .chart-box, 
     .chart-box-pro {
-        height: 260px !important; /* Reducción de altura para que quepa la gráfica sin romper la vista */
+        height: 220px !important; /* Ajusta la altura del canvas para que no empuje todo hacia abajo */
+        width: 100% !important;
     }
 
-    /* 7. TARJETA DE TENDENCIA */
-    .trend-card {
-        grid-template-columns: 1fr;
-        text-align: center;
-        gap: 12px;
+    /* 6. TABLAS DE ALUMNOS (MUY IMPORTANTE) */
+    /* Para evitar que las tablas rompan la pantalla, les damos un contenedor con scroll horizontal */
+    .table-container, 
+    .responsive-table-wrapper {
+        width: 100% !important;
+        overflow-x: auto !important; /* Activa el desplazamiento lateral si la tabla es muy ancha */
+        -webkit-overflow-scrolling: touch;
+        margin-top: 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border);
     }
 
-    .trend-icon {
-        margin: 0 auto;
+    table {
+        min-width: 500px; /* Fuerza un ancho mínimo a la tabla interna para que los datos sean legibles al hacer scroll */
+        font-size: 0.85rem !important;
     }
-
-    .trend-status span {
-        width: 100%;
-        justify-content: center;
-    }
-
-    /* 8. FORMULARIOS Y MODALES EN MÓVIL */
-    .modal-overlay {
-        padding: 10px;
-    }
-
-    .modal-sheet {
-        padding: 20px;
-        border-radius: 24px;
-    }
-
-    .student-modal-header {
-        padding: 24px 16px;
-    }
-
-    .student-form {
-        padding: 20px 16px;
+    
+    th, td {
+        padding: 10px 8px !important;
     }
 }
 
@@ -2147,5 +2127,59 @@ body.dark-mode #qrcode{
 
     .login-card-food .login-input input{
         font-size:16px;
+    }
+}
+/* Botón Hamburguesa (Oculto en escritorio) */
+.btn-hamburger {
+    display: none;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+    z-index: 2001;
+}
+
+/* =====================================
+   AJUSTES EN TU @media(max-width: 640px)
+   ===================================== */
+@media(max-width: 640px) {
+    /* Mostramos el botón hamburguesa */
+    .btn-hamburger {
+        display: block;
+        align-self: flex-start;
+    }
+
+    /* Rediseñamos el Header para acomodar el botón */
+    .top-dashboard {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 16px;
+        padding: 16px 12px !important;
+    }
+
+    /* Modificamos tu sidebar para que sea desplegable */
+    .sidebar-dashboard {
+        display: flex !important; /* Volvemos a permitir que exista */
+        position: fixed;
+        top: 0;
+        left: -280px; /* Escondido a la izquierda por defecto */
+        width: 260px;
+        height: 100vh;
+        transition: left 0.3s ease; /* Animación suave al salir */
+        z-index: 9999; /* Por encima de todo */
+    }
+
+    /* Clase activa que inyectaremos con JS para mostrarlo */
+    .sidebar-dashboard.active {
+        left: 0;
+    }
+
+    /* Añadimos un pequeño botón de cerrar dentro del menú móvil (opcional pero recomendado) */
+    .sidebar-brand {
+        position: relative;
     }
 }
