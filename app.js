@@ -1648,3 +1648,13 @@ function mostrarToast(mensaje, tipo = "success") {
         toast.remove();
     }, 3600);
 }
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', async () => {
+        try {
+            await navigator.serviceWorker.register('/sw.js');
+            console.log('PWA lista');
+        } catch (error) {
+            console.error('Error SW:', error);
+        }
+    });
+}
