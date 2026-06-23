@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Sarahuaro Intelligence | PRO</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="glass-bg"></div>
+
+    <!-- LOGIN -->
+    <!-- LOGIN OPCIÓN 2: COMEDOR COMUNITARIO -->
+    <div id="pantalla-login" class="modal-overlay login-overlay" style="display: flex;">
+        <div class="login-food-community">
+
+            <section class="login-food-left">
+                <div class="login-food-logo">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                    <div>
+                        <small>fundación</small>
+                        <strong>SARAHUARO</strong>
+                    </div>
+                </div>
+
+                <h1>
+                    Juntos servimos<br>
+                    más que comida,<br>
+                    <span>servimos esperanza</span>
+                </h1>
+
+                <p>
+                    Cada registro representa un apoyo entregado y una oportunidad
+                    para acompañar mejor a nuestros niños.
+                </p>
+
+                <div class="food-illustration">
+                    <div class="plate">
+                        <i class="fa-solid fa-bowl-food"></i>
+                    </div>
+                    <div class="cup">
+                        <i class="fa-solid fa-mug-hot"></i>
+                    </div>
+                </div>
+            </section>
+
+            <section class="login-food-right">
+                <div class="login-card-food">
+                    <div class="login-lock">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+
+                    <h2>Bienvenido de nuevo</h2>
+                    <p>Inicia sesión para continuar en tu panel de control</p>
+
+                    <label for="login-user">Usuario</label>
+                    <div class="login-input">
+                        <i class="fa-solid fa-user"></i>
+                        <input type="text" id="login-user" placeholder="Ingresa tu usuario">
+                    </div>
+
+                    <label for="login-pass">Contraseña</label>
+                    <div class="login-input">
+                        <i class="fa-solid fa-lock"></i>
+                        <input type="password" id="login-pass" placeholder="Ingresa tu contraseña">
+                    </div>
+
+                    <button onclick="verificarAcceso()" class="login-btn">
+                        <i class="fa-solid fa-right-to-bracket"></i>
+                        Ingresar
+                    </button>
+
+                    <div class="login-secure">
+                        <i class="fa-solid fa-shield-heart"></i>
+                        <span>Tu información está protegida y respaldada de forma segura.</span>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar-dashboard">
+        <div class="sidebar-brand">
+            <div class="brand-logo">
+                <i class="fa-solid fa-heart"></i>
+            </div>
+
+            <div>
+                <h2>Sarahuaro-Inteligente</h2>
+                <span>Fundación</span>
+            </div>
+        </div>
+
+        <nav class="sidebar-menu">
+            <button class="side-item active" id="nav-inicio" onclick="cambiarPestana('inicio')">
+                <i class="fa-solid fa-house"></i>
+                <span>Dashboard</span>
+            </button>
+
+            <button class="side-item" onclick="cambiarPestana('inicio')">
+                <i class="fa-solid fa-user"></i>
+                <span>Alumnos</span>
+            </button>
+
+            <button class="side-item" id="nav-metricas" onclick="cambiarPestana('metricas')">
+                <i class="fa-solid fa-chart-simple"></i>
+                <span>Métricas</span>
+            </button>
+
+            <button class="side-item" id="nav-pro" onclick="cambiarPestana('pro')">
+                <i class="fa-solid fa-heart-pulse"></i>
+                <span>Salud PRO</span>
+            </button>
+
+            <button class="side-item" onclick="descargarDatosDeNube()">
+                <i class="fa-solid fa-cloud-arrow-down"></i>
+                <span id="sync-text-down">Sincronizar nube</span>
+            </button>
+
+            <button class="side-item" onclick="subirDatosANube()">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <span id="sync-text-up">Respaldar datos</span>
+            </button>
+
+            <button class="side-item" onclick="abrirConfiguracion()">
+                <i class="fa-solid fa-gear"></i>
+                <span>Configuración</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+
+            <div>
+                <strong>Administrador</strong>
+                <span>admin</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- HEADER SUPERIOR -->
+    <header class="top-dashboard">
+        <div class="welcome-area">
+            <h1>¡Bienvenido de vuelta! 👋</h1>
+            <p>Aquí tienes un resumen de tu impacto el día de hoy.</p>
+        </div>
+
+        <div class="top-actions">
+            <button onclick="toggleTheme()" id="theme-toggle" class="btn-top">
+                <i class="fa-solid fa-moon"></i>
+                <span>Modo oscuro</span>
+            </button>
+
+            <button onclick="sincronizarAhora()" class="btn-top">
+                <i class="fa-solid fa-sync"></i>
+            </button>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- INICIO -->
+        <section id="seccion-inicio">
+            <div class="search-area">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="buscador" placeholder="Buscar por nombre...">
+            </div>
+
+            <div class="main-action">
+                <button onclick="prepararRegistro()" class="btn-primary-glow">
+                    <i class="fa-solid fa-user-plus"></i>
+                    REGISTRAR ALUMNO
+                </button>
+            </div>
+
+            <div id="lista-ninos" class="grid-container"></div>
+        </section>
+
+        <!-- MÉTRICAS -->
+        <section id="seccion-metricas" class="metrics-section" style="display: none;">
+
+            <div class="metrics-header">
+                <div>
+                    <span class="badge-tech">DASHBOARD OPERATIVO</span>
+                    <h2>Métricas de Impacto</h2>
+                    <p>Resumen visual de asistencia, inversión estimada y operación diaria.</p>
+                </div>
+
+                <div class="metrics-actions">
+                    <button onclick="exportarExcel()" class="btn-report excel">
+                        <i class="fa-solid fa-file-excel"></i>
+                        Excel
+                    </button>
+
+                    <button onclick="exportarPDF()" class="btn-report pdf">
+                        <i class="fa-solid fa-file-pdf"></i>
+                        PDF
+                    </button>
+                </div>
+            </div>
+
+            <div class="metrics-grid">
+
+                <div class="metric-card main">
+                    <div class="metric-icon">
+                        <i class="fa-solid fa-hand-holding-heart"></i>
+                    </div>
+                    <small>Gasto estimado hoy</small>
+                    <h3 id="gasto-hoy">$0.00</h3>
+                    <p>Basado en raciones registradas durante el día.</p>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon blue">
+                        <i class="fa-solid fa-calendar-days"></i>
+                    </div>
+                    <small>Proyección mensual</small>
+                    <h3 id="proyeccion-mes">$0.00</h3>
+                    <p id="dias-restantes">--</p>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon gold">
+                        <i class="fa-solid fa-children"></i>
+                    </div>
+                    <small>Atendidos hoy</small>
+                    <h3 id="atendidos-hoy">0</h3>
+                    <p>Alumnos con apoyo registrado hoy.</p>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon purple">
+                        <i class="fa-solid fa-users"></i>
+                    </div>
+                    <small>Alumnos registrados</small>
+                    <h3 id="total-alumnos">0</h3>
+                    <p>Total de beneficiarios en el sistema.</p>
+                </div>
+
+            </div>
+
+            <div class="metrics-layout">
+
+                <div class="chart-card chart-card-pro">
+                    <div class="chart-header chart-header-pro">
+                        <div>
+                            <h3>Asistencias registradas</h3>
+                            <p>Comparativo diario con promedio semanal para evaluar tendencia.</p>
+                        </div>
+
+                        <span>
+                            <i class="fa-solid fa-calendar-days"></i>
+                            Últimos 5 días escolares
+                        </span>
+                    </div>
+
+                    <div class="chart-kpis">
+                        <div class="chart-kpi">
+                            <div class="chart-kpi-icon green">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                            <div>
+                                <small>Últimos 5 días</small>
+                                <strong id="kpi-total-7">0</strong>
+                                <p>alumnos</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-kpi">
+                            <div class="chart-kpi-icon blue">
+                                <i class="fa-solid fa-arrow-trend-up"></i>
+                            </div>
+                            <div>
+                                <small>Promedio diario</small>
+                                <strong id="kpi-promedio-7">0</strong>
+                                <p>alumnos</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-kpi">
+                            <div class="chart-kpi-icon gold">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                            <div>
+                                <small>Mejor día</small>
+                                <strong id="kpi-mejor-dia">--</strong>
+                                <p id="kpi-mejor-dia-total">0 alumnos</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-kpi">
+                            <div class="chart-kpi-icon purple">
+                                <i class="fa-solid fa-arrow-up"></i>
+                            </div>
+                            <div>
+                                <small>Diferencia vs prom.</small>
+                                <strong id="kpi-diferencia">0</strong>
+                                <p>alumnos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-box chart-box-pro">
+                        <canvas id="graficaAsistencias"></canvas>
+                    </div>
+
+                    <div class="trend-card">
+                        <div class="trend-icon">
+                            <i class="fa-solid fa-chart-simple"></i>
+                        </div>
+
+                        <div class="trend-text">
+                            <strong>Tendencia del periodo</strong>
+                            <p id="texto-tendencia">
+                                La tendencia se calculará cuando existan registros suficientes.
+                            </p>
+                        </div>
+
+                        <div class="trend-status">
+                            <span id="estado-tendencia">Sin datos</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="impact-card">
+                    <h3>Resumen ejecutivo</h3>
+
+                    <div class="impact-row">
+                        <span>Raciones totales</span>
+                        <strong id="raciones-totales">0</strong>
+                    </div>
+
+                    <div class="impact-row">
+                        <span>Inversión acumulada</span>
+                        <strong id="inversion-total">$0.00</strong>
+                    </div>
+
+                    <div class="impact-row">
+                        <span>Promedio diario</span>
+                        <strong id="promedio-diario">0</strong>
+                    </div>
+
+                    <div class="impact-note">
+                        <i class="fa-solid fa-circle-info"></i>
+                        <p>
+                            Estos datos permiten estimar recursos, justificar impacto
+                            y presentar avances de forma clara.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PRO -->
+        <section id="seccion-pro" style="display: none;">
+            <div class="modal-sheet panel-pro">
+                <h2>
+                    Panel <span style="color:var(--accent)">Salud PRO</span>
+                </h2>
+
+                <div id="lista-salud-alumnos"></div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL AGREGAR / EDITAR -->
+    <div id="modal-agregar" class="modal-overlay">
+        <div class="modal-sheet modal-student">
+
+            <button onclick="cerrarModal()" class="btn-close-modal" aria-label="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="student-modal-header">
+                <div class="student-modal-icon">
+                    <i class="fa-solid fa-user-plus"></i>
+                </div>
+
+                <span class="student-modal-badge">REGISTRO ACADÉMICO</span>
+                <h2 id="modal-titulo">Registrar Alumno</h2>
+                <p>Captura la información esencial del alumno para registrar apoyos y seguimiento.</p>
+            </div>
+
+            <div class="student-form">
+
+                <div class="form-section-title">
+                    <i class="fa-solid fa-id-card"></i>
+                    <span>Datos personales</span>
+                </div>
+
+                <div class="form-grid two">
+                    <div class="field-group">
+                        <label for="reg-nombres">Nombres</label>
+                        <div class="field-icon">
+                            <i class="fa-solid fa-user"></i>
+                            <input type="text" id="reg-nombres" class="input-flat" placeholder="Ej. Ana Sofía">
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="reg-apellidos">Apellidos</label>
+                        <div class="field-icon">
+                            <i class="fa-solid fa-user-tag"></i>
+                            <input type="text" id="reg-apellidos" class="input-flat" placeholder="Ej. Hernández López">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-title">
+                    <i class="fa-solid fa-school"></i>
+                    <span>Información escolar</span>
+                </div>
+
+                <div class="field-group">
+                    <label for="reg-escuela">Escuela</label>
+                    <div class="field-icon">
+                        <i class="fa-solid fa-building-columns"></i>
+                        <input type="text" id="reg-escuela" class="input-flat" placeholder="Nombre de la escuela">
+                    </div>
+                </div>
+
+                <div class="form-grid two">
+                    <div class="field-group">
+                        <label for="reg-grado">Grado</label>
+                        <div class="field-icon">
+                            <i class="fa-solid fa-layer-group"></i>
+                            <input type="text" id="reg-grado" class="input-flat" placeholder="Ej. 4° Primaria">
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="reg-edad">Edad</label>
+                        <div class="field-icon">
+                            <i class="fa-solid fa-cake-candles"></i>
+                            <input type="number" id="reg-edad" class="input-flat" placeholder="Edad" min="1" max="18">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section-title">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    <span>Datos de salud</span>
+                </div>
+
+                <div class="form-grid two">
+                    <div class="field-group">
+                        <label for="reg-peso">Peso</label>
+                        <div class="field-icon">
+                            <i class="fa-solid fa-weight-scale"></i>
+                            <input type="number" id="reg-peso" class="input-flat" placeholder="kg" step="0.1" min="1"
+                                max="150">
+                        </div>
+                    </div>
+
+                    <div class="field-group">
+                        <label for="reg-estatura">Estatura</label>
+                        <div class="field-icon">
+                            <i class="fa-solid fa-ruler-vertical"></i>
+                            <input type="number" id="reg-estatura" class="input-flat" placeholder="cm" min="30"
+                                max="250">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="student-note">
+                    <i class="fa-solid fa-shield-heart"></i>
+                    <span>
+                        La información registrada es confidencial y se utiliza únicamente para el bienestar del alumno.
+                    </span>
+                </div>
+
+                <button onclick="guardarNuevoAlumno()" class="btn-save-student">
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    GUARDAR ALUMNO
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL PERFIL -->
+    <div id="modal-perfil" class="modal-overlay" style="display:none;">
+        <div class="modal-content" style="
+width:min(95vw,500px);
+max-height:90vh;
+overflow-y:auto;
+overflow-x:hidden;
+padding:25px;
+border-radius:24px;
+position:relative;
+background:white;
+">
+
+            <button onclick="cerrarModal()" class="btn-close-modal" aria-label="Cerrar">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div id="contenido-perfil">
+                <!-- Se llena con JS -->
+            </div>
+
+            <button onclick="cerrarModal()"
+                style="width:100%; margin-top:20px; padding:14px; border-radius:16px; background:#1e293b; color:white; border:none; font-weight:bold; cursor:pointer; font-size:1rem;">
+                CERRAR
+            </button>
+
+        </div>
+    </div>
+
+    <!-- MODAL ADMIN -->
+    <div id="modal-admin" class="modal-overlay" style="display:none;">
+        <div style="background:white; padding:30px; border-radius:25px; width:90%; max-width:400px; text-align:center;">
+            <i class="fa-solid fa-lock" style="font-size:2rem; color:#ef4444; margin-bottom:15px;"></i>
+
+            <h3>Panel de Control</h3>
+            <p style="font-size:0.9rem; color:#64748b;">
+                Ingresa la contraseña maestra para realizar cambios críticos.
+            </p>
+
+            <input type="password" id="pass-admin" placeholder="Contraseña de Administrador"
+                style="width:100%; padding:12px; margin:20px 0; border-radius:12px; border:1px solid #cbd5e1;">
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                <button onclick="cerrarModalAdmin()"
+                    style="background:#f1f5f9; border:none; padding:12px; border-radius:12px; font-weight:bold;">
+                    Cancelar
+                </button>
+
+                <button onclick="validarAdmin()"
+                    style="background:#1e293b; color:white; border:none; padding:12px; border-radius:12px; font-weight:bold;">
+                    Entrar
+                </button>
+            </div>
+
+            <div id="opciones-criticas"
+                style="display:none; margin-top:25px; padding-top:20px; border-top:1px solid #e2e8f0;">
+                <button onclick="limpiarBaseDatos()"
+                    style="width:100%; background:#fee2e2; color:#b91c1c; border:none; padding:15px; border-radius:12px; font-weight:800; margin-bottom:10px;">
+                    <i class="fa-solid fa-trash-can"></i>
+                    LIMPIAR TODA LA BASE LOCAL
+                </button>
+
+                <p style="font-size:0.7rem; color:#94a3b8;">
+                    *Esto borrará alumnos y asistencias solo en este navegador.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
