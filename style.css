@@ -1659,6 +1659,115 @@ body.dark-mode #qrcode{
     th, td {
         padding: 10px 8px !important;
     }
+    /* 1. CABECERA DE MÉTRICAS */
+    .metrics-header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .metrics-header h2 {
+        font-size: 1.6rem !important; /* Texto más cómodo para pantallas chicas */
+    }
+
+    /* Botones de reporte (Excel y PDF) en paralelo */
+    .metrics-actions {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px;
+    }
+
+    .btn-report {
+        justify-content: center;
+        padding: 12px 10px !important;
+        font-size: 0.9rem !important;
+    }
+
+    /* 2. REJILLA DE TARJETAS PRINCIPALES (Gasto hoy, Atendidos, etc.) */
+    .metrics-grid {
+        display: grid !important;
+        grid-template-columns: 1fr !important; /* Una tarjeta por fila */
+        gap: 14px !important;
+    }
+
+    .metric-card {
+        min-height: auto !important; /* Elimina la altura fija que genera huecos */
+        padding: 20px !important;
+        flex-direction: row !important; /* Alineación horizontal icóno-texto muy elegante en móvil */
+        align-items: center;
+        gap: 16px;
+    }
+
+    .metric-icon {
+        margin-bottom: 0 !important; /* Reseteamos el margen de escritorio */
+        width: 54px !important;
+        height: 54px !important;
+        flex: 0 0 54px !important;
+        font-size: 1.3rem !important;
+    }
+
+    .metric-card h3 {
+        font-size: 1.6rem !important;
+        margin: 4px 0 !important;
+    }
+
+    /* 3. DISTRIBUCIÓN DEL CONTENIDO (Gráfica vs Resumen) */
+    .metrics-layout {
+        grid-template-columns: 1fr !important; /* La gráfica arriba, el resumen abajo */
+        gap: 18px !important;
+    }
+
+    /* 4. MICRO-KPIS DE LA GRÁFICA (Últimos 5 días, Promedio, etc.) */
+    .chart-kpis {
+        grid-template-columns: 1fr 1fr !important; /* Los acomodamos en un cómodo tablero de 2x2 */
+        gap: 10px !important;
+        margin-bottom: 16px !important;
+    }
+
+    .chart-kpi {
+        padding: 12px !important;
+        flex-direction: column !important; /* Icono arriba, datos abajo */
+        text-align: center;
+        gap: 8px !important;
+    }
+
+    .chart-kpi-icon {
+        width: 44px !important;
+        height: 44px !important;
+        flex: 0 0 44px !important;
+        font-size: 1.1rem !important;
+    }
+
+    .chart-kpi strong {
+        font-size: 1.25rem !important;
+    }
+
+    /* 5. CONTROL DE ALTURA DEL GRÁFICO (CANVAS) */
+    .chart-box, .chart-box-pro {
+        height: 250px !important; /* Evita que el gráfico se estire infinitamente hacia abajo */
+        position: relative;
+        width: 100%;
+    }
+
+    /* 6. CORRECCIÓN DE LA TARJETA DE TENDENCIA */
+    .trend-card {
+        grid-template-columns: 1fr !important; /* Colapsa el grid horizontal de 3 columnas */
+        text-align: center;
+        gap: 12px !important;
+        padding: 16px !important;
+    }
+
+    .trend-icon {
+        margin: 0 auto !important;
+    }
+
+    .trend-status span {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+    }
 }
 
 /* LOGIN OPCIÓN 2: COMEDOR COMUNITARIO */
