@@ -1,13 +1,22 @@
 {
   "short_name": "Sarahuaro",
-  "name": "Fundación Sarahuaro",
-  "start_url": "./index.html",
+  "name": "Fundación Sarahuaro Intelligence",
+  "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#232946",
-  "background_color": "#F4F7FB",
-  "icons": [{
-    "src": "https://cdn-icons-png.flaticon.com/512/3063/3063822.png",
-    "sizes": "512x512",
-    "type": "image/png"
-  }]
+  "theme_color": "#0b6b4b",
+  "background_color": "#f6f9f3",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
 }
