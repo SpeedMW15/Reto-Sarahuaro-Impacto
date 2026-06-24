@@ -2286,77 +2286,52 @@ body.dark-mode #qrcode{
    BOTON DE AYUDA
 ===================================== */
 
+/* BOTÓN FLOTANTE AYUDA */
+
 .help-fab{
     position:fixed;
     bottom:24px;
     right:24px;
-    width:58px;
-    height:58px;
+    width:64px;
+    height:64px;
     border:none;
     border-radius:50%;
-    background:linear-gradient(
-        135deg,
-        var(--primary),
-        var(--accent)
-    );
+    background:linear-gradient(135deg,var(--primary),var(--accent));
     color:white;
-    font-size:1.3rem;
+    font-size:1.5rem;
     cursor:pointer;
-    z-index:5000;
-    box-shadow:0 15px 30px rgba(0,0,0,.18);
+    z-index:99999;
+    box-shadow:0 12px 30px rgba(11,107,75,.35);
     transition:.3s;
 }
 
 .help-fab:hover{
-    transform:translateY(-4px);
+    transform:scale(1.08);
 }
 
+/* MODAL AYUDA */
+
 .help-modal{
+    display:none;
     position:fixed;
     inset:0;
-    display:none;
-    align-items:center;
-    justify-content:center;
     background:rgba(0,0,0,.45);
-    backdrop-filter:blur(6px);
-    z-index:6000;
+    backdrop-filter:blur(4px);
+    z-index:99998;
+    justify-content:center;
+    align-items:center;
     padding:20px;
 }
 
 .help-card{
-    width:min(550px,95vw);
-    max-height:85vh;
-    overflow-y:auto;
+    width:min(520px,95vw);
     background:white;
-    border-radius:28px;
+    border-radius:24px;
     padding:28px;
     position:relative;
-    box-shadow:0 25px 60px rgba(0,0,0,.20);
-}
-
-.help-card h2{
-    margin-top:0;
-    color:var(--primary);
-    font-weight:900;
-}
-
-.help-section{
-    margin-top:18px;
-    padding:16px;
-    border-radius:16px;
-    background:#f8faf8;
-    border:1px solid var(--border);
-}
-
-.help-section h4{
-    margin:0 0 8px;
-    color:var(--primary-dark);
-}
-
-.help-section p{
-    margin:0;
-    color:var(--muted);
-    line-height:1.6;
+    max-height:80vh;
+    overflow-y:auto;
+    box-shadow:0 20px 50px rgba(0,0,0,.2);
 }
 
 .help-close{
@@ -2371,14 +2346,18 @@ body.dark-mode #qrcode{
     cursor:pointer;
 }
 
-body.dark-mode .help-card{
-    background:#0e2119;
-    color:white;
+.help-card h2{
+    margin-top:0;
+    color:var(--primary);
 }
 
-body.dark-mode .help-section{
-    background:#132c22;
-    border-color:rgba(255,255,255,.10);
+.help-section{
+    padding:12px 0;
+    border-bottom:1px solid #e5e7eb;
+}
+
+.help-section:last-child{
+    border-bottom:none;
 }
 /* ==========================
    TOUR GUIADO
