@@ -1623,6 +1623,113 @@ document.addEventListener("click", function(e) {
         }
     }
 });
+function toggleHelp() {
+
+    const modal = document.getElementById("helpModal");
+
+    if(modal.style.display === "flex"){
+        modal.style.display = "none";
+    }else{
+        modal.style.display = "flex";
+    }
+
+}
+let pasoTour = 0;
+
+const pasos = [
+
+{
+    elemento:"tour-alumno",
+    titulo:"Registrar alumnos",
+    texto:"Desde aquí puedes registrar un nuevo alumno en el sistema."
+},
+
+{
+    elemento:"tour-metricas",
+    titulo:"Consultar métricas",
+    texto:"Aquí encontrarás estadísticas de asistencia, salud e impacto."
+},
+
+{
+    elemento:"tour-reportes",
+    titulo:"Descargar reportes",
+    texto:"Puedes generar reportes PDF y Excel para presentar resultados."
+},
+
+{
+    elemento:"tour-perfil",
+    titulo:"Perfil del alumno",
+    texto:"Consulta información completa, historial y código QR."
+}
+
+];
+
+function iniciarTour(){
+
+    document.getElementById("tourOverlay").style.display = "block";
+
+    mostrarPaso();
+
+}
+
+function mostrarPaso(){
+
+    document
+    .querySelectorAll(".tour-highlight")
+    .forEach(el => el.classList.remove("tour-highlight"));
+
+    const paso = pasos[pasoTour];
+
+    const elemento =
+    document.getElementById(paso.elemento);
+
+    if(elemento){
+
+        elemento.classList.add("tour-highlight");
+
+        elemento.scrollIntoView({
+            behavior:"smooth",
+            block:"center"
+        });
+
+    }
+
+    document.getElementById("tourNumero")
+    .textContent = pasoTour + 1;
+
+    document.getElementById("tourTitulo")
+    .textContent = paso.titulo;
+
+    document.getElementById("tourTexto")
+    .textContent = paso.texto;
+}
+
+function siguienteTour(){
+
+    pasoTour++;
+
+    if(pasoTour >= pasos.length){
+
+        cerrarTour();
+        return;
+    }
+
+    mostrarPaso();
+}
+
+function cerrarTour(){
+
+    document.getElementById("tourOverlay").style.display = "none";
+
+    document
+    .querySelectorAll(".tour-highlight")
+    .forEach(el => el.classList.remove("tour-highlight"));
+
+    localStorage.setItem(
+        "tourSarahuaroCompletado",
+        "true"
+    );
+}
 
 function mostrarToast(mensaje, tipo = "success") {
     const container = document.getElementById("toast-container");

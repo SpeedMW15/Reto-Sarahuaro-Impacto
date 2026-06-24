@@ -113,10 +113,7 @@
         </div>
 
         <nav class="sidebar-menu">
-            <button class="side-item active" id="nav-inicio" onclick="cambiarPestana('inicio')">
-                <i class="fa-solid fa-house"></i>
-                <span>Dashboard</span>
-            </button>
+            
 
             <button class="side-item" onclick="cambiarPestana('inicio')">
                 <i class="fa-solid fa-user"></i>
@@ -574,6 +571,87 @@ background:white;
             </div>
         </div>
     </div>
+
+    <!-- BOTON AYUDA -->
+
+<button class="help-fab" onclick="toggleHelp()">
+    <i class="fa-solid fa-circle-question"></i>
+</button>
+
+<div id="helpModal" class="help-modal">
+
+    <div class="help-card">
+
+        <button class="help-close" onclick="toggleHelp()">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <h2>
+            <i class="fa-solid fa-life-ring"></i>
+            Guía Rápida
+        </h2>
+
+        <div class="help-section">
+            <h4>👦 Registrar alumno</h4>
+            <p>Presiona "Nuevo Alumno" y completa todos los datos solicitados.</p>
+        </div>
+
+        <div class="help-section">
+            <h4>✅ Registrar asistencia</h4>
+            <p>Busca al alumno y presiona "Registrar Asistencia".</p>
+        </div>
+
+        <div class="help-section">
+            <h4>📊 Consultar métricas</h4>
+            <p>Las métricas se actualizan automáticamente con cada asistencia.</p>
+        </div>
+
+        <div class="help-section">
+            <h4>📄 Exportar PDF o Excel</h4>
+            <p>Utiliza los botones de exportación en la sección Métricas.</p>
+        </div>
+
+        <div class="help-section">
+            <h4>🔄 Sincronización</h4>
+            <p>La información se respalda automáticamente en Supabase.</p>
+        </div>
+
+        <div class="help-section">
+            <h4>🛟 Soporte</h4>
+            <p>Si algo falla, actualiza la página y vuelve a intentarlo.</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- TOUR GUIADO -->
+
+<div id="tourOverlay" class="tour-overlay" style="display:none;">
+
+    <div class="tour-card">
+
+        <div class="tour-step">
+            Paso <span id="tourNumero">1</span> de 4
+        </div>
+
+        <h3 id="tourTitulo"></h3>
+
+        <p id="tourTexto"></p>
+
+        <div class="tour-actions">
+            <button onclick="cerrarTour()" class="tour-skip">
+                Omitir
+            </button>
+
+            <button onclick="siguienteTour()" class="tour-next">
+                Siguiente
+            </button>
+        </div>
+
+    </div>
+
+</div>
 
     <div id="toast-container"></div>
 

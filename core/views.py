@@ -1,3 +1,6 @@
-from django.shortcuts import render
+from django.http import JsonResponse
 
-# Create your views here.
+def recibir_asistencias(request):
+    return JsonResponse({
+        "status": "ok"
+    })
