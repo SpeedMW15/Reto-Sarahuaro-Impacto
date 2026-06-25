@@ -113,7 +113,7 @@
         </div>
 
         <nav class="sidebar-menu">
-            
+
 
             <button class="side-item" onclick="cambiarPestana('inicio')">
                 <i class="fa-solid fa-user"></i>
@@ -556,106 +556,119 @@ background:white;
                     Entrar
                 </button>
             </div>
+            <hr style="margin:20px 0;">
+            <hr style="margin:20px 0;">
 
             <div id="opciones-criticas"
                 style="display:none; margin-top:25px; padding-top:20px; border-top:1px solid #e2e8f0;">
+                <h4>Eliminar alumno específico</h4>
+
+                <input type="text" id="buscar-alumno-admin" placeholder="Buscar alumno por nombre..."
+                    oninput="buscarAlumnoAdmin()"
+                    style="width:100%; padding:12px; border-radius:12px; border:1px solid #cbd5e1; margin-bottom:10px;">
+
+                <div id="resultados-admin" style="
+        max-height:250px;
+        overflow-y:auto;
+        text-align:left;
+        border:1px solid #e2e8f0;
+        border-radius:12px;
+        padding:10px;
+        background:#f8fafc;">
+                </div>
                 <button onclick="limpiarBaseDatos()"
                     style="width:100%; background:#fee2e2; color:#b91c1c; border:none; padding:15px; border-radius:12px; font-weight:800; margin-bottom:10px;">
                     <i class="fa-solid fa-trash-can"></i>
-                    LIMPIAR TODA LA BASE LOCAL
+                    LIMPIAR TODA LA BASE DE DATOS
+                </button>
+                <hr style="margin:20px 0;">
+
+
+
+                <!-- BOTON AYUDA -->
+
+                <button class="help-fab" onclick="toggleHelp()">
+                    <i class="fa-solid fa-circle-question"></i>
                 </button>
 
-                <p style="font-size:0.7rem; color:#94a3b8;">
-                    *Esto borrará alumnos y asistencias solo en este navegador.
-                </p>
-            </div>
-        </div>
-    </div>
+                <div id="helpModal" class="help-modal">
 
-    <!-- BOTON AYUDA -->
+                    <div class="help-card">
 
-<button class="help-fab" onclick="toggleHelp()">
-    <i class="fa-solid fa-circle-question"></i>
-</button>
+                        <button class="help-close" onclick="toggleHelp()">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
 
-<div id="helpModal" class="help-modal">
+                        <h2>
+                            <i class="fa-solid fa-life-ring"></i>
+                            Guía Rápida
+                        </h2>
 
-    <div class="help-card">
+                        <div class="help-section">
+                            <h4>👦 Registrar alumno</h4>
+                            <p>Presiona "Nuevo Alumno" y completa todos los datos solicitados.</p>
+                        </div>
 
-        <button class="help-close" onclick="toggleHelp()">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+                        <div class="help-section">
+                            <h4>✅ Registrar asistencia</h4>
+                            <p>Busca al alumno y presiona "Registrar Asistencia".</p>
+                        </div>
 
-        <h2>
-            <i class="fa-solid fa-life-ring"></i>
-            Guía Rápida
-        </h2>
+                        <div class="help-section">
+                            <h4>📊 Consultar métricas</h4>
+                            <p>Las métricas se actualizan automáticamente con cada asistencia.</p>
+                        </div>
 
-        <div class="help-section">
-            <h4>👦 Registrar alumno</h4>
-            <p>Presiona "Nuevo Alumno" y completa todos los datos solicitados.</p>
-        </div>
+                        <div class="help-section">
+                            <h4>📄 Exportar PDF o Excel</h4>
+                            <p>Utiliza los botones de exportación en la sección Métricas.</p>
+                        </div>
 
-        <div class="help-section">
-            <h4>✅ Registrar asistencia</h4>
-            <p>Busca al alumno y presiona "Registrar Asistencia".</p>
-        </div>
+                        <div class="help-section">
+                            <h4>🔄 Sincronización</h4>
+                            <p>La información se respalda automáticamente en Supabase.</p>
+                        </div>
 
-        <div class="help-section">
-            <h4>📊 Consultar métricas</h4>
-            <p>Las métricas se actualizan automáticamente con cada asistencia.</p>
-        </div>
+                        <div class="help-section">
+                            <h4>🛟 Soporte</h4>
+                            <p>Si algo falla, actualiza la página y vuelve a intentarlo.</p>
+                        </div>
 
-        <div class="help-section">
-            <h4>📄 Exportar PDF o Excel</h4>
-            <p>Utiliza los botones de exportación en la sección Métricas.</p>
-        </div>
+                    </div>
 
-        <div class="help-section">
-            <h4>🔄 Sincronización</h4>
-            <p>La información se respalda automáticamente en Supabase.</p>
-        </div>
+                </div>
 
-        <div class="help-section">
-            <h4>🛟 Soporte</h4>
-            <p>Si algo falla, actualiza la página y vuelve a intentarlo.</p>
-        </div>
+                <!-- TOUR GUIADO -->
 
-    </div>
+                <div id="tourOverlay" class="tour-overlay" style="display:none;">
 
-</div>
+                    <div class="tour-card">
 
-<!-- TOUR GUIADO -->
+                        <div class="tour-step">
+                            Paso <span id="tourNumero">1</span> de 4
+                        </div>
 
-<div id="tourOverlay" class="tour-overlay" style="display:none;">
+                        <h3 id="tourTitulo"></h3>
 
-    <div class="tour-card">
+                        <p id="tourTexto"></p>
 
-        <div class="tour-step">
-            Paso <span id="tourNumero">1</span> de 4
-        </div>
+                        <div class="tour-actions">
+                            <button onclick="cerrarTour()" class="tour-skip">
+                                Omitir
+                            </button>
 
-        <h3 id="tourTitulo"></h3>
+                            <button onclick="siguienteTour()" class="tour-next">
+                                Siguiente
+                            </button>
+                        </div>
 
-        <p id="tourTexto"></p>
+                    </div>
 
-        <div class="tour-actions">
-            <button onclick="cerrarTour()" class="tour-skip">
-                Omitir
-            </button>
+                </div>
 
-            <button onclick="siguienteTour()" class="tour-next">
-                Siguiente
-            </button>
-        </div>
+                <div id="toast-container"></div>
 
-    </div>
-
-</div>
-
-    <div id="toast-container"></div>
-
-    <script src="app.js"></script>
+                <script src="app.js"></script>
 </body>
 
 </html>

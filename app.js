@@ -644,29 +644,44 @@ function validarAdmin() {
 }
 
 async function limpiarBaseDatos() {
-    const confirmar = confirm("¿ESTÁS SEGURO? Esto borrará TODO en este PC y también en la NUBE.");
 
-    if (confirmar) {
-        try {
-            // 1. Borrar en la Nube (Supabase)
-            // .delete().neq('id', 0) es un truco para borrar todo
-            const { error } = await supabaseClient
-                .from('ninos')
-                .delete()
-                .neq('id', '0');
+    const confirmar = confirm(
+        "¿ESTÁS SEGURO?\n\nEsto eliminará TODOS los alumnos y asistencias tanto localmente como en Supabase."
+    );
 
-            if (error) throw error;
+    if (!confirmar) return;
 
-            // 2. Borrar localmente (Dexie)
-            await db.ninos.clear();
-            await db.asistencias.clear();
+    try {
 
-            alert("Sistema reiniciado: Local y Nube limpios.");
-            location.reload();
-        } catch (err) {
-            console.error("Error al limpiar nube:", err);
-            alert("Se borró lo local, pero hubo un error con la nube.");
-        }
+        // BORRAR ASISTENCIAS EN SUPABASE
+        const { error: errorAsistencias } = await supabaseClient
+            .from("asistencias")
+            .delete()
+            .neq("id", 0);
+
+        if (errorAsistencias) throw errorAsistencias;
+
+        // BORRAR ALUMNOS EN SUPABASE
+        const { error: errorNinos } = await supabaseClient
+            .from("ninos")
+            .delete()
+            .neq("id", "0");
+
+        if (errorNinos) throw errorNinos;
+
+        // BORRAR LOCAL
+        await db.ninos.clear();
+        await db.asistencias.clear();
+
+        alert("Sistema reiniciado correctamente.");
+
+        location.reload();
+
+    } catch (err) {
+
+        console.error(err);
+
+        alert("Error al limpiar la base de datos.");
     }
 }
 
@@ -1729,6 +1744,123 @@ function cerrarTour(){
         "tourSarahuaroCompletado",
         "true"
     );
+}
+async function buscarAlumnoAdmin() {
+
+    const texto = document
+        .getElementById('buscar-alumno-admin')
+        .value
+        .toLowerCase()
+        .trim();
+
+    const contenedor = document.getElementById('resultados-admin');
+
+    if (!texto) {
+        contenedor.innerHTML = "";
+        return;
+    }
+
+    const alumnos = await db.ninos.toArray();
+
+    const resultados = alumnos.filter(a =>
+        (`${a.nombres} ${a.apellidos}`)
+            .toLowerCase()
+            .includes(texto)
+    );
+
+    contenedor.innerHTML = resultados.map(alumno => `
+        <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            padding:10px;
+            margin-bottom:8px;
+            background:white;
+            border-radius:10px;
+            border:1px solid #e2e8f0;
+        ">
+            <div>
+                <strong>${alumno.nombres} ${alumno.apellidos}</strong>
+                <br>
+                <small>${alumno.id}</small>
+            </div>
+
+            <button
+                onclick="eliminarAlumnoAdmin('${alumno.id}')"
+                style="
+                    background:#fee2e2;
+                    color:#b91c1c;
+                    border:none;
+                    padding:8px 12px;
+                    border-radius:10px;
+                    cursor:pointer;
+                    font-weight:bold;
+                ">
+                Eliminar
+            </button>
+        </div>
+    `).join('');
+}
+async function eliminarAlumnoAdmin(idAlumno) {
+
+    const alumno = await db.ninos.get(idAlumno);
+
+    if (!alumno) {
+        mostrarToast("Alumno no encontrado.", "error");
+        return;
+    }
+
+    const confirmar = confirm(
+        `¿Eliminar a ${alumno.nombres} ${alumno.apellidos}?\n\nTambién se eliminarán todas sus asistencias.`
+    );
+
+    if (!confirmar) return;
+
+    try {
+
+        // LOCAL
+        await db.ninos.delete(idAlumno);
+
+        await db.asistencias
+            .where("ninoId")
+            .equals(idAlumno)
+            .delete();
+
+        // SUPABASE
+        await supabaseClient
+            .from("ninos")
+            .delete()
+            .eq("id", idAlumno);
+
+        await supabaseClient
+            .from("asistencias")
+            .delete()
+            .eq("ninoid", idAlumno);
+
+        mostrarToast(
+            "Alumno eliminado correctamente.",
+            "success"
+        );
+
+        buscarAlumnoAdmin();
+
+        render();
+
+        if (
+            document.getElementById("seccion-metricas")?.style.display !== "none"
+        ) {
+            actualizarMetricas();
+        }
+
+    } catch (err) {
+
+        console.error(err);
+
+        mostrarToast(
+            "Error al eliminar alumno.",
+            "error"
+        );
+    }
 }
 
 function mostrarToast(mensaje, tipo = "success") {
