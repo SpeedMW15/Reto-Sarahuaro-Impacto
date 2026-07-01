@@ -1887,6 +1887,14 @@ function mostrarToast(mensaje, tipo = "success") {
         toast.remove();
     }, 3600);
 }
+document.addEventListener("keydown", function (e) {
+    if (
+        e.target.type === "number" &&
+        ["e", "E", "+", "-"].includes(e.key)
+    ) {
+        e.preventDefault();
+    }
+});
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
         try {
