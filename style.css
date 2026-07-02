@@ -1204,6 +1204,13 @@ button{
     font-size:1rem;
     font-weight:800;
     outline:none;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.input-flat.input-error {
+    border-color: var(--danger) !important;
+    background-color: #fff5f5 !important;
+    box-shadow: 0 0 0 4px rgba(220, 38, 38, 0.15) !important;
+    animation: shakeError 0.4s ease-in-out;
 }
 
 .field-icon .input-flat{
@@ -1418,6 +1425,11 @@ button{
 
 @keyframes toastOut{
     to{opacity:0;transform:translateX(30px);}
+}
+@keyframes shakeError {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-4px); }
+    40%, 80% { transform: translateX(4px); }
 }
 
 /* NAV VIEJA OCULTA */

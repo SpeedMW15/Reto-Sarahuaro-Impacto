@@ -167,7 +167,10 @@ function cerrarModal() {
 function prepararRegistro() {
     alumnoEnEdicion = null;
     document.getElementById('modal-titulo').innerText = "Registrar Alumno";
-    document.querySelectorAll('#modal-agregar input').forEach(i => i.value = "");
+    document.querySelectorAll('#modal-agregar input').forEach(i => {
+        i.value = "";
+        i.classList.remove('input-error'); // <-- Línea añadida para limpiar errores previos
+    });
     abrirModal('modal-agregar');
 }
 
@@ -186,11 +189,11 @@ async function prepararEdicion(id) {
 }
 
 async function guardarNuevoAlumno() {
+    // 1. Obtener valores y limpiar espacios
     const nombres = document.getElementById('reg-nombres').value.trim();
     const apellidos = document.getElementById('reg-apellidos').value.trim();
     const escuela = document.getElementById('reg-escuela').value.trim();
     const grado = document.getElementById('reg-grado').value.trim();
-
     const edadInput = document.getElementById('reg-edad').value;
     const pesoInput = document.getElementById('reg-peso').value;
     const estaturaInput = document.getElementById('reg-estatura').value;
@@ -199,26 +202,56 @@ async function guardarNuevoAlumno() {
     const peso = parseFloat(pesoInput);
     const estatura = parseFloat(estaturaInput);
 
-    if (!nombres || !apellidos || !escuela || !grado) {
-        mostrarToast("Completa todos los campos obligatorios.", "error");
+    // 2. Mapeo de elementos obligatorios
+    const camposObligatorios = [
+        { valor: nombres, elemento: document.getElementById('reg-nombres'), nombre: "Nombres" },
+        { valor: apellidos, elemento: document.getElementById('reg-apellidos'), nombre: "Apellidos" },
+        { valor: escuela, elemento: document.getElementById('reg-escuela'), nombre: "Escuela" },
+        { valor: grado, elemento: document.getElementById('reg-grado'), nombre: "Grado" },
+        { valor: edadInput, elemento: document.getElementById('reg-edad'), nombre: "Edad" }
+    ];
+
+    let camposVacios = [];
+
+    // 3. Validar campos vacíos y marcar visualmente
+    camposObligatorios.forEach(campo => {
+        if (!campo.valor) {
+            campo.elemento.classList.add('input-error');
+            camposVacios.push(campo.nombre);
+
+            // Listener opcional: remover el borde rojo cuando el usuario empiece a escribir
+            campo.elemento.oninput = () => campo.elemento.classList.remove('input-error');
+        } else {
+            campo.elemento.classList.remove('input-error');
+        }
+    });
+
+    // Si falta alguno, detenemos el proceso y mostramos advertencia detallada
+    if (camposVacios.length > 0) {
+        mostrarToast(`Faltan campos obligatorios: ${camposVacios.join(', ')}`, "error");
         return;
     }
 
-    if (!edadInput || edad < 1 || edad > 18) {
-        alert("La edad debe estar entre 1 y 18 años.");
+    // 4. Validaciones de Rangos Numéricos Existentes
+    if (edad < 1 || edad > 18) {
+        document.getElementById('reg-edad').classList.add('input-error');
+        mostrarToast("La edad debe estar entre 1 y 18 años.", "error");
         return;
     }
 
     if (pesoInput !== "" && (peso <= 0 || peso > 150)) {
-        alert("El peso debe ser mayor a 0 y menor o igual a 150 kg.");
+        document.getElementById('reg-peso').classList.add('input-error');
+        mostrarToast("El peso debe ser entre 0 y 150 kg.", "error");
         return;
     }
 
     if (estaturaInput !== "" && (estatura <= 30 || estatura > 250)) {
-        alert("La estatura debe ser mayor a 30 cm y menor o igual a 250 cm.");
+        document.getElementById('reg-estatura').classList.add('input-error');
+        mostrarToast("La estatura debe ser entre 30 y 250 cm.", "error");
         return;
     }
 
+    // 5. Procesamiento de Guardado (Se mantiene igual a tu lógica original)
     const datos = {
         nombres,
         apellidos,
@@ -402,8 +435,14 @@ Descargar QR
 
 </button>
 
+
 </div>
 
+<button onclick="cerrarModal(); prepararEdicion('${n.id}')" 
+        style="width:100%; margin-top:15px; padding:14px; border-radius:16px; background:#e2e8f0; color:#1e293b; border:none; font-weight:bold; cursor:pointer; font-size:1rem; display:flex; align-items:center; justify-content:center; gap:8px;">
+    <i class="fa-solid fa-user-pen"></i>
+    Editar Datos del Alumno
+</button>
 
 <button
 onclick="eliminarAlumno('${n.id}')"
@@ -1615,10 +1654,10 @@ function toggleMenuMobile() {
 
 // Modificamos ligeramente la función existente cambiarPestana para que cierre el menú automáticamente tras elegir una opción
 const cambiarPestanaOriginal = cambiarPestana;
-cambiarPestana = function(target) {
+cambiarPestana = function (target) {
     // Ejecuta la lógica original que ya tenías
     cambiarPestanaOriginal(target);
-    
+
     // Si estamos en móvil, cierra el menú desplegable
     const sidebar = document.querySelector('.sidebar-dashboard');
     if (sidebar && window.innerWidth <= 640) {
@@ -1627,10 +1666,10 @@ cambiarPestana = function(target) {
 }
 
 // Cerrar el menú si el usuario da clic fuera de él
-document.addEventListener("click", function(e) {
+document.addEventListener("click", function (e) {
     const sidebar = document.querySelector('.sidebar-dashboard');
     const btnHam = document.querySelector('.btn-hamburger');
-    
+
     if (sidebar && sidebar.classList.contains('active')) {
         // Si el clic no fue dentro del menú ni en el botón de hamburguesa, lo cerramos
         if (!sidebar.contains(e.target) && !btnHam.contains(e.target)) {
@@ -1642,9 +1681,9 @@ function toggleHelp() {
 
     const modal = document.getElementById("helpModal");
 
-    if(modal.style.display === "flex"){
+    if (modal.style.display === "flex") {
         modal.style.display = "none";
-    }else{
+    } else {
         modal.style.display = "flex";
     }
 
@@ -1653,33 +1692,33 @@ let pasoTour = 0;
 
 const pasos = [
 
-{
-    elemento:"tour-alumno",
-    titulo:"Registrar alumnos",
-    texto:"Desde aquí puedes registrar un nuevo alumno en el sistema."
-},
+    {
+        elemento: "tour-alumno",
+        titulo: "Registrar alumnos",
+        texto: "Desde aquí puedes registrar un nuevo alumno en el sistema."
+    },
 
-{
-    elemento:"tour-metricas",
-    titulo:"Consultar métricas",
-    texto:"Aquí encontrarás estadísticas de asistencia, salud e impacto."
-},
+    {
+        elemento: "tour-metricas",
+        titulo: "Consultar métricas",
+        texto: "Aquí encontrarás estadísticas de asistencia, salud e impacto."
+    },
 
-{
-    elemento:"tour-reportes",
-    titulo:"Descargar reportes",
-    texto:"Puedes generar reportes PDF y Excel para presentar resultados."
-},
+    {
+        elemento: "tour-reportes",
+        titulo: "Descargar reportes",
+        texto: "Puedes generar reportes PDF y Excel para presentar resultados."
+    },
 
-{
-    elemento:"tour-perfil",
-    titulo:"Perfil del alumno",
-    texto:"Consulta información completa, historial y código QR."
-}
+    {
+        elemento: "tour-perfil",
+        titulo: "Perfil del alumno",
+        texto: "Consulta información completa, historial y código QR."
+    }
 
 ];
 
-function iniciarTour(){
+function iniciarTour() {
 
     document.getElementById("tourOverlay").style.display = "block";
 
@@ -1687,43 +1726,43 @@ function iniciarTour(){
 
 }
 
-function mostrarPaso(){
+function mostrarPaso() {
 
     document
-    .querySelectorAll(".tour-highlight")
-    .forEach(el => el.classList.remove("tour-highlight"));
+        .querySelectorAll(".tour-highlight")
+        .forEach(el => el.classList.remove("tour-highlight"));
 
     const paso = pasos[pasoTour];
 
     const elemento =
-    document.getElementById(paso.elemento);
+        document.getElementById(paso.elemento);
 
-    if(elemento){
+    if (elemento) {
 
         elemento.classList.add("tour-highlight");
 
         elemento.scrollIntoView({
-            behavior:"smooth",
-            block:"center"
+            behavior: "smooth",
+            block: "center"
         });
 
     }
 
     document.getElementById("tourNumero")
-    .textContent = pasoTour + 1;
+        .textContent = pasoTour + 1;
 
     document.getElementById("tourTitulo")
-    .textContent = paso.titulo;
+        .textContent = paso.titulo;
 
     document.getElementById("tourTexto")
-    .textContent = paso.texto;
+        .textContent = paso.texto;
 }
 
-function siguienteTour(){
+function siguienteTour() {
 
     pasoTour++;
 
-    if(pasoTour >= pasos.length){
+    if (pasoTour >= pasos.length) {
 
         cerrarTour();
         return;
@@ -1732,13 +1771,13 @@ function siguienteTour(){
     mostrarPaso();
 }
 
-function cerrarTour(){
+function cerrarTour() {
 
     document.getElementById("tourOverlay").style.display = "none";
 
     document
-    .querySelectorAll(".tour-highlight")
-    .forEach(el => el.classList.remove("tour-highlight"));
+        .querySelectorAll(".tour-highlight")
+        .forEach(el => el.classList.remove("tour-highlight"));
 
     localStorage.setItem(
         "tourSarahuaroCompletado",
