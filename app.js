@@ -1785,7 +1785,6 @@ function cerrarTour() {
     );
 }
 async function buscarAlumnoAdmin() {
-
     const texto = document
         .getElementById('buscar-alumno-admin')
         .value
@@ -1807,6 +1806,11 @@ async function buscarAlumnoAdmin() {
             .includes(texto)
     );
 
+    if (resultados.length === 0) {
+        contenedor.innerHTML = `<div style="text-align:center; color:var(--text-muted); padding:10px; font-size:0.85rem;">No se encontraron coincidencias.</div>`;
+        return;
+    }
+
     contenedor.innerHTML = resultados.map(alumno => `
         <div style="
             display:flex;
@@ -1819,9 +1823,9 @@ async function buscarAlumnoAdmin() {
             border:1px solid #e2e8f0;
         ">
             <div>
-                <strong>${alumno.nombres} ${alumno.apellidos}</strong>
+                <strong style="color:#1e293b;">${alumno.nombres} ${alumno.apellidos}</strong>
                 <br>
-                <small>${alumno.id}</small>
+                <small style="color:#64748b;">${alumno.id}</small>
             </div>
 
             <button
@@ -1841,64 +1845,62 @@ async function buscarAlumnoAdmin() {
     `).join('');
 }
 async function eliminarAlumnoAdmin(idAlumno) {
-
     const alumno = await db.ninos.get(idAlumno);
 
     if (!alumno) {
-        mostrarToast("Alumno no encontrado.", "error");
+        mostrarToast("Alumno no encontrado en la base de datos local.", "error");
         return;
     }
 
     const confirmar = confirm(
-        `¿Eliminar a ${alumno.nombres} ${alumno.apellidos}?\n\nTambién se eliminarán todas sus asistencias.`
+        `¿ESTÁS SEGURO?\n\nVas a eliminar permanentemente a:\n${alumno.nombres} ${alumno.apellidos}\n\nEsta acción borrará al alumno y todas sus asistencias tanto en este dispositivo como en la nube (Supabase).`
     );
 
     if (!confirmar) return;
 
     try {
+        // Mostrar un toast temporal indicando que inició el borrado
+        mostrarToast("Eliminando de forma local y en la nube...", "info");
 
-        // LOCAL
+        // 1. ELIMINACIÓN EN LA NUBE (SUPABASE)
+        const { error: errorNubeNino } = await supabaseClient
+            .from("ninos")
+            .delete()
+            .eq("id", idAlumno);
+
+        if (errorNubeNino) throw new Error("Error al borrar alumno en la nube: " + errorNubeNino.message);
+
+        const { error: errorNubeAsistencias } = await supabaseClient
+            .from("asistencias")
+            .delete()
+            .eq("ninoid", idAlumno);
+
+        if (errorNubeAsistencias) throw new Error("Error al borrar asistencias en la nube: " + errorNubeAsistencias.message);
+
+        // 2. ELIMINACIÓN LOCAL (DEXIE)
         await db.ninos.delete(idAlumno);
-
         await db.asistencias
             .where("ninoId")
             .equals(idAlumno)
             .delete();
 
-        // SUPABASE
-        await supabaseClient
-            .from("ninos")
-            .delete()
-            .eq("id", idAlumno);
+        // 3. TOAST DE ÉXITO DEFINITIVO
+        mostrarToast(`Se eliminó a ${alumno.nombres} correctamente de todo el sistema.`, "success");
 
-        await supabaseClient
-            .from("asistencias")
-            .delete()
-            .eq("ninoid", idAlumno);
-
-        mostrarToast(
-            "Alumno eliminado correctamente.",
-            "success"
-        );
-
-        buscarAlumnoAdmin();
-
+        // Limpiar el buscador y actualizar interfaces
+        document.getElementById('buscar-alumno-admin').value = "";
+        document.getElementById('resultados-admin').innerHTML = "";
+        
         render();
 
-        if (
-            document.getElementById("seccion-metricas")?.style.display !== "none"
-        ) {
+        if (document.getElementById("seccion-metricas")?.style.display !== "none") {
             actualizarMetricas();
         }
 
     } catch (err) {
-
         console.error(err);
-
-        mostrarToast(
-            "Error al eliminar alumno.",
-            "error"
-        );
+        // Toast de error crítico si el servidor de la nube falla
+        mostrarToast("Fallo crítico: No se pudo eliminar completamente de la nube.", "error");
     }
 }
 
